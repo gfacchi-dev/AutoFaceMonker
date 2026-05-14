@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  # ── Unit + integration tests (dev install via uv sync) ──────────────────
+  test:
+    name: Test (py${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install project + dev deps
+        run: uv sync
+
+      - name: Run tests
+        run: uv run pytest tests/ -v --tb=short
+
+  # ── Simulates: pip install autofacemonker / uv add autofacemonker ────────
+  install-test:
+    name: Install from wheel (py${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      # Install into the managed Python without a project venv — mirrors what
+      # an end-user gets with `pip install autofacemonker` from PyPI.
+      - name: Install wheel (pip, no-index)
+        run: pip install autofacemonker --find-links dist/ --no-index
+
+      - name: Smoke — public API imports
+        run: >
+          python -c "
+          from autofacemonker import AutoFaceMonker, register_template;
+          import autofacemonker;
+          assert autofacemonker.__version__;
+          print('imports OK:', autofacemonker.__version__)
+          "
+
+      - name: Smoke — bundled template.ply present
+        run: >
+          python -c "
+          from autofacemonker._register import _default_template;
+          import os;
+          p = _default_template();
+          assert os.path.isfile(p), f'template not found: {p}';
+          print('data OK:', p)
+          "
+
+      - name: Smoke — CLI --help
+        run: python -m autofacemonker._cli --help
