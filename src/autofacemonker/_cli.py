@@ -4,8 +4,6 @@ import argparse
 import json
 import sys
 
-from ._register import AutoFaceMonker
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -22,6 +20,8 @@ def main():
     parser.add_argument("-n", "--iterations", type=int, default=120,
                         help="MeshMonk nonrigid iterations (default: 120)")
     args = parser.parse_args()
+
+    from ._register import AutoFaceMonker
 
     # Load correspondences from JSON if provided
     corr = None

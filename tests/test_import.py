@@ -23,7 +23,7 @@ def test_cli_help():
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0
+    assert result.returncode == 0, result.stderr
     assert "target" in result.stdout
     assert "template" in result.stdout
 
