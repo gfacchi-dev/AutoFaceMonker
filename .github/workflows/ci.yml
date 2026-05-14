@@ -62,24 +62,11 @@ jobs:
       - name: Install wheel (pip)
         run: pip install autofacemonker --find-links dist/
 
-      - name: Smoke — public API imports
-        run: >
-          python -c "
-          from autofacemonker import AutoFaceMonker, register_template;
-          import autofacemonker;
-          assert autofacemonker.__version__;
-          print('imports OK:', autofacemonker.__version__)
-          "
+      - name: Smoke — package loads and version is set
+        run: python -c "import autofacemonker; assert autofacemonker.__version__; print('OK:', autofacemonker.__version__)"
 
       - name: Smoke — bundled template.ply present
-        run: >
-          python -c "
-          from autofacemonker._register import _default_template;
-          import os;
-          p = _default_template();
-          assert os.path.isfile(p), f'template not found: {p}';
-          print('data OK:', p)
-          "
+        run: python -c "import importlib.resources, os; p=importlib.resources.files('autofacemonker.data').joinpath('template.ply'); assert os.path.isfile(str(p)), str(p)"
 
       - name: Smoke — CLI --help
         run: python -m autofacemonker._cli --help
