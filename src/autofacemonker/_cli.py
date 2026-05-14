@@ -14,7 +14,7 @@ def main():
     parser.add_argument("-t", "--template", default=None,
                         help="Template mesh path (default: bundled template.ply)")
     parser.add_argument("-c", "--correspondences", default=None,
-                        help="JSON file with landmark→vertex mapping, e.g. {\"0\": 3572, ...}")
+                        help="JSON file with landmark->vertex mapping, e.g. {\"0\": 3572, ...}")
     parser.add_argument("-o", "--out", default=None,
                         help="Output PLY path (default: <target>_warped.ply)")
     parser.add_argument("-n", "--iterations", type=int, default=120,
