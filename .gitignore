@@ -13,3 +13,5 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+model.glb

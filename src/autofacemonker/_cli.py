@@ -30,7 +30,8 @@ def main():
             raw = json.load(f)
         corr = [(int(k), v) for k, v in raw.items()]
 
-    out = args.out or args.target.replace(".obj", "_warped.ply")
+    import os
+    out = args.out or os.path.splitext(args.target)[0] + "_warped.ply"
 
     monker = AutoFaceMonker(
         template=args.template,

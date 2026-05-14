@@ -64,7 +64,7 @@ class AutoFaceMonker:
         -------
         warped_vertices : np.ndarray (N, 3)
         """
-        target = trimesh.load(str(target_path))
+        target = trimesh.load(str(target_path), force="mesh")
 
         # ── MVMP ──────────────────────────────────────────────────────────
         res = self._marker.predict(str(target_path))
