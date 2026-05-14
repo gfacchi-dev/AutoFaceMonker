@@ -10,5 +10,8 @@ is replaced per-test via @patch("autofacemonker._register.Facemarker").
 import sys
 from unittest.mock import MagicMock
 
-for _mod in ["mvmp", "mvmp.core", "mvmp.core.facemarker", "mvmp.core.predict"]:
+for _mod in [
+    "mvmp", "mvmp.core", "mvmp.core.facemarker", "mvmp.core.predict",
+    "meshmonk", "meshmonk._meshmonk_core",
+]:
     sys.modules.setdefault(_mod, MagicMock())
