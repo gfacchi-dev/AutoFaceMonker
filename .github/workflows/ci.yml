@@ -57,16 +57,22 @@ jobs:
       - name: Build wheel
         run: uv build --wheel
 
-      # Install into the managed Python without a project venv — mirrors what
-      # an end-user gets with `pip install autofacemonker` from PyPI.
-      - name: Install wheel
-        run: uv pip install --system autofacemonker --find-links dist/
+      # Fresh venv with no project source — mirrors `pip install autofacemonker`
+      - name: Install into fresh venv and smoke test
+        shell: bash
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        run: |
+          uv venv .test-env
+          uv pip install autofacemonker --find-links dist/ --python .test-env
 
-      - name: Smoke — package loads and version is set
-        run: python -c "import autofacemonker; assert autofacemonker.__version__; print('OK:', autofacemonker.__version__)"
+          # Cross-platform path to the venv Python
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            PY=".test-env/Scripts/python"
+          else
+            PY=".test-env/bin/python"
+          fi
 
-      - name: Smoke — bundled template.ply present
-        run: python -c "import importlib.resources, os; p=importlib.resources.files('autofacemonker.data').joinpath('template.ply'); assert os.path.isfile(str(p)), str(p)"
-
-      - name: Smoke — CLI --help
-        run: python -m autofacemonker._cli --help
+          "$PY" -c "import autofacemonker; assert autofacemonker.__version__; print('OK:', autofacemonker.__version__)"
+          "$PY" -c "import importlib.resources, os; p=str(importlib.resources.files('autofacemonker.data').joinpath('template.ply')); assert os.path.isfile(p), p; print('data OK')"
+          "$PY" -m autofacemonker._cli --help
