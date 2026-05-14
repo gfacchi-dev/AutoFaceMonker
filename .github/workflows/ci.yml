@@ -51,8 +51,8 @@ jobs:
 
       # Install into the managed Python without a project venv — mirrors what
       # an end-user gets with `pip install autofacemonker` from PyPI.
-      - name: Install wheel (pip, no-index)
-        run: pip install autofacemonker --find-links dist/ --no-index
+      - name: Install wheel (pip)
+        run: pip install autofacemonker --find-links dist/
 
       - name: Smoke — public API imports
         run: >
