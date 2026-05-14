@@ -1,6 +1,6 @@
 """AutoFaceMonker: automatic 3D facial template registration via MVMP + MeshMonk."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __all__ = ["AutoFaceMonker", "register_template"]
 
 
