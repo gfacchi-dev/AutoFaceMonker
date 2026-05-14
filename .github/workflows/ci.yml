@@ -23,6 +23,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Install OpenGL (Linux headless)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libosmesa6 libgl1
+
       - name: Install project + dev deps
         run: uv sync
 
@@ -45,6 +49,10 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python }}
+
+      - name: Install OpenGL (Linux headless)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libosmesa6 libgl1
 
       - name: Build wheel
         run: uv build --wheel
