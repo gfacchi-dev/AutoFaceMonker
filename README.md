@@ -1,6 +1,6 @@
 # AutoFaceMonker
 
-Automatic 3D facial template registration using [MVMP](https://github.com/.../mvmp) landmark detection and [MeshMonk](https://github.com/TheWebMonks/meshmonk) nonrigid surface registration.
+Automatic 3D facial template registration using [MVMP](https://github.com/gfacchi-dev/mvmp) landmark detection and [MeshMonk](https://github.com/jsnyde0/meshmonk) nonrigid surface registration.
 
 Given a template mesh and a target 3D face scan, AutoFaceMonker detects 478 MediaPipe facial landmarks via MVMP, aligns the template with Procrustes analysis, then refines the fit with MeshMonk nonrigid registration — no manual intervention required.
 
