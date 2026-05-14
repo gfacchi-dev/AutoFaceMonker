@@ -14,7 +14,7 @@ classifiers = [
 dependencies = [
     "embreex>=4.4.0",
     "meshmonk[io]>=0.3.0",
-    "mvmp>=1.3.0",
+    "mvmp>=1.3.1",
     "numpy>=1.26.0,<3.0",
     "trimesh>=4.0",
 ]
