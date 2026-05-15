@@ -14,4 +14,9 @@ wheels/
 .DS_Store
 Thumbs.db
 
-model.glb
+*.glb
+*.stl
+*_warped.ply
+debug_*.html
+debug_*.ply
+debug_scan_*/

@@ -103,6 +103,16 @@ class AutoFaceMonker:
         )
 
         # ── MeshMonk nonrigid ─────────────────────────────────────────────
+        # MeshMonk defaults (sigma=3.0) assume mm-scale meshes (~100–300).
+        # If vertex coords are all fractional (< 0.X) rather than 100+,
+        # the mesh is in metres / another non-mm unit — upscale to ~200.
+        max_coord = np.abs(target.vertices).max()
+        scale_mm = 1.0
+        if max_coord < 1.0:
+            scale_mm = 200.0 / max_coord if max_coord > 0 else 1.0
+            aligned *= scale_mm
+            target.vertices = target.vertices * scale_mm
+
         tgt_features = np.column_stack([target.vertices, target.vertex_normals])
         result = meshmonk.nonrigid_register(
             floating_features=np.column_stack([aligned, aligned_n]),
@@ -112,13 +122,17 @@ class AutoFaceMonker:
             num_iterations=self.num_iterations,
         )
 
+        warped = result.aligned_vertices
+        if scale_mm != 1.0:
+            warped = warped / scale_mm
+
         if save_path:
             out = self.template.copy()
-            out.vertices = result.aligned_vertices
+            out.vertices = warped
             out.export(str(save_path))
             print(f"Saved {save_path}")
 
-        return result.aligned_vertices
+        return warped
 
 
 def register_template(target_path, template=None, correspondences=None, save_path=None):
