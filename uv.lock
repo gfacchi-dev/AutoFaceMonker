@@ -30,7 +30,7 @@ wheels = [
 
 [[package]]
 name = "autofacemonker"
-version = "0.1.4"
+version = "0.1.5"
 source = { editable = "." }
 dependencies = [
     { name = "embreex" },
@@ -54,7 +54,7 @@ dev = [
 requires-dist = [
     { name = "embreex", specifier = ">=4.4.0" },
     { name = "meshmonk", extras = ["io"], specifier = ">=0.3.0" },
-    { name = "mvmp", specifier = ">=1.4.0" },
+    { name = "mvmp", specifier = ">=1.4.2" },
     { name = "numpy", specifier = ">=1.26.0,<3.0" },
     { name = "pyopengl-accelerate", marker = "extra == 'fast'" },
     { name = "trimesh", specifier = ">=4.0" },
@@ -549,7 +549,7 @@ wheels = [
 
 [[package]]
 name = "mvmp"
-version = "1.4.0"
+version = "1.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "embreex" },
@@ -560,9 +560,9 @@ dependencies = [
     { name = "scipy" },
     { name = "trimesh" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/77/277016e26fa791688170b5b694011840aa291f936b6fef491a9f3bf6d457/mvmp-1.4.0.tar.gz", hash = "sha256:96b53207ec976ae2e19ece92f02dfd499d0aa72f65c3851e24395b6d3ebae646", size = 3370771, upload-time = "2026-05-14T21:18:40.541Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/3e/64a57063c3f35f69fee2f20cf31136d4d42cc1c67557d51d98ff0126fff0/mvmp-1.4.2.tar.gz", hash = "sha256:cb9236f11cde61bd0ff0cb160a14948545d9a000bc479444c4e3033e496da439", size = 3372379, upload-time = "2026-05-15T19:05:47.121Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/56/820aff2851fc7ef3d867001803872ab0376402687f5c1569e1b315bd7132/mvmp-1.4.0-py3-none-any.whl", hash = "sha256:669b965c8dd51fe44cbbfc1eb0cb1cab8b21f139f16daba1aba424fbdf6f8bf6", size = 3370770, upload-time = "2026-05-14T21:18:42.172Z" },
+    { url = "https://files.pythonhosted.org/packages/21/95/c14edcc578d4946e3e386cfd227d704c8419bc681270a4591858b6816e95/mvmp-1.4.2-py3-none-any.whl", hash = "sha256:667bb767224a9557d64455381d1dc52371455b1d14dd9c75e79032e5d37ef599", size = 3371601, upload-time = "2026-05-15T19:05:45.414Z" },
 ]
 
 [[package]]

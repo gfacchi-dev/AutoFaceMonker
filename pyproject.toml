@@ -1,6 +1,6 @@
 [project]
 name = "autofacemonker"
-version = "0.1.5"
+version = "0.1.6"
 description = "Automatic 3D facial template registration via MVMP + MeshMonk"
 readme = "README.md"
 license = { text = "MIT" }
@@ -14,7 +14,7 @@ classifiers = [
 dependencies = [
     "embreex>=4.4.0",
     "meshmonk[io]>=0.3.0",
-    "mvmp>=1.4.0",
+    "mvmp>=1.4.2",
     "numpy>=1.26.0,<3.0",
     "trimesh>=4.0",
 ]

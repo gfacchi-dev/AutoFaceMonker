@@ -1,6 +1,7 @@
 """Core: MVMP landmarks → Procrustes → MeshMonk nonrigid."""
 
 from importlib.resources import files
+from typing import Callable
 
 import numpy as np
 import trimesh
@@ -50,7 +51,8 @@ class AutoFaceMonker:
         self._tpl_vids = np.array([c[1] for c in self.correspondences])
         self._tmpl_lmks = self.template.vertices[self._tpl_vids]
 
-    def register(self, target_path, save_path=None):
+    def register(self, target_path, save_path=None,
+                 progress_callback: Callable[[float, str], None] | None = None):
         """Register the template onto *target_path*.
 
         Parameters
@@ -59,14 +61,18 @@ class AutoFaceMonker:
             Path to the target .obj mesh.
         save_path : str, pathlib.Path, or None
             If provided, export the warped template as PLY.
+        progress_callback : Callable[[float, str], None] or None
+            Optional callback for progress updates. Called with (0.0–1.0, stage).
 
         Returns
         -------
         warped_vertices : np.ndarray (N, 3)
         """
+        cb = progress_callback
         target = trimesh.load(str(target_path), force="mesh")
 
         # ── MVMP ──────────────────────────────────────────────────────────
+        if cb: cb(0.0, "Detecting landmarks")
         res = self._marker.predict(str(target_path))
         lmks_full = np.full((478, 3), np.nan)
         for k, v in res.landmarks_3d.items():
@@ -80,6 +86,7 @@ class AutoFaceMonker:
         tgt = lmks_full[idx]
 
         # ── Procrustes (rotation + translation + scale) ───────────────────
+        if cb: cb(0.2, "Aligning template")
         tmpl_c = tmpl - tmpl.mean(axis=0)
         tgt_c = tgt - tgt.mean(axis=0)
         H = tmpl_c.T @ tgt_c
@@ -114,6 +121,8 @@ class AutoFaceMonker:
             target.vertices = target.vertices * scale_mm
 
         tgt_features = np.column_stack([target.vertices, target.vertex_normals])
+
+        if cb: cb(0.3, "Registering")
         result = meshmonk.nonrigid_register(
             floating_features=np.column_stack([aligned, aligned_n]),
             target_features=tgt_features,
@@ -121,6 +130,7 @@ class AutoFaceMonker:
             target_faces=target.faces,
             num_iterations=self.num_iterations,
         )
+        if cb: cb(0.95, "Completed")
 
         warped = result.aligned_vertices
         if scale_mm != 1.0:
@@ -135,7 +145,9 @@ class AutoFaceMonker:
         return warped
 
 
-def register_template(target_path, template=None, correspondences=None, save_path=None):
+def register_template(target_path, template=None, correspondences=None,
+                      save_path=None, progress_callback=None):
     """Convenience function.  See ``AutoFaceMonker`` for parameters."""
     m = AutoFaceMonker(template=template, correspondences=correspondences)
-    return m.register(target_path, save_path=save_path)
+    return m.register(target_path, save_path=save_path,
+                      progress_callback=progress_callback)
