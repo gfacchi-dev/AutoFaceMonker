@@ -1,6 +1,6 @@
 [project]
 name = "autofacemonker"
-version = "0.1.6"
+version = "0.1.7"
 description = "Automatic 3D facial template registration via MVMP + MeshMonk"
 readme = "README.md"
 license = { text = "MIT" }
