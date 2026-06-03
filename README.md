@@ -18,7 +18,7 @@ Requires Python ≥ 3.11.
 autofacemonker subject.obj -o warped.ply
 ```
 
-This uses the bundled template mesh and built-in 7-point anatomical landmark correspondences.
+This uses the bundled template mesh and built-in 5-point anatomical landmark correspondences.
 
 ## Python API
 
@@ -62,7 +62,7 @@ options:
   -c, --correspondences
                       JSON file with landmark→vertex mapping
   -o, --out           Output PLY path (default: <target>_warped.ply)
-  -n, --iterations    MeshMonk nonrigid iterations (default: 120)
+  -n, --iterations    MeshMonk nonrigid iterations (default: 80)
 ```
 
 ### Correspondence JSON format
@@ -75,9 +75,9 @@ options:
 
 1. **MVMP** detects 478 MediaPipe facial landmarks on the target mesh using multi-view 2D projections with 5 zone cameras.
 
-2. **Procrustes** rigidly aligns the template using the 7 anatomical landmark correspondences, computing rotation, translation, and uniform scale.
+2. **Procrustes** rigidly aligns the template using the 5 anatomical landmark correspondences (upper lip, both inner canthi, both mouth corners), computing rotation, translation, and uniform scale.
 
-3. **MeshMonk nonrigid** refines the fit by deforming the template to match the target surface over 120 iterations.
+3. **MeshMonk nonrigid** refines the fit by deforming the template to match the target surface. The target is first cropped to the region around the aligned template, and the nonrigid registration uses parameters matching Cliniface's rNonRigid configuration (80 iterations, sigma 1.6, push-pull equalisation).
 
 ## Requirements
 

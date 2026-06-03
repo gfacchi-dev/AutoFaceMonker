@@ -30,13 +30,14 @@ wheels = [
 
 [[package]]
 name = "autofacemonker"
-version = "0.1.5"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "embreex" },
     { name = "meshmonk", extra = ["io"] },
     { name = "mvmp" },
     { name = "numpy" },
+    { name = "scipy" },
     { name = "trimesh" },
 ]
 
@@ -57,6 +58,7 @@ requires-dist = [
     { name = "mvmp", specifier = ">=1.4.2" },
     { name = "numpy", specifier = ">=1.26.0,<3.0" },
     { name = "pyopengl-accelerate", marker = "extra == 'fast'" },
+    { name = "scipy", specifier = ">=1.10" },
     { name = "trimesh", specifier = ">=4.0" },
 ]
 provides-extras = ["fast"]
