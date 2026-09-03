@@ -165,14 +165,51 @@ class AutoFaceMonker:
         if self.crop_margin is not None:
             from scipy.spatial import cKDTree
 
-            margin = self.crop_margin * scale_mm
-            d, _ = cKDTree(aligned).query(target.vertices)
-            keep_v = d < margin
-            keep_f = keep_v[target.faces].all(axis=1)
-            if keep_f.sum() > len(self.template.faces):  # guard against over-crop
-                sub = target.submesh([np.where(keep_f)[0]], append=True)
-                tgt_v, tgt_f, tgt_n = sub.vertices, sub.faces, sub.vertex_normals
-                print(f"Cropped target to {len(tgt_v)} verts within {self.crop_margin}mm of mask")
+            # The over-crop guard used to be `keep_f.sum() > len(template.faces)`
+            # -- a TARGET face count compared against the TEMPLATE's own 14050.
+            # That conflates "the crop is too aggressive" with "the target mesh
+            # is coarse": a low-density scan puts few faces in the shell even
+            # when the shell covers the face perfectly, and the crop was then
+            # skipped ENTIRELY, handing MeshMonk a whole head whose neck, ears
+            # and hair drag the template outward. Measured on production, that
+            # fired on 4 of 7 scans reconstructed at detail=medium.
+            #
+            # What the guard actually wants to know is whether the crop leaves
+            # part of the template uncovered. Test that directly, and if it
+            # does, WIDEN the margin rather than fall back to no crop at all --
+            # an uncropped head is the worst available outcome, not a safe one.
+            base = self.crop_margin * scale_mm
+            # Distance from each target vertex to the aligned template does not
+            # depend on the margin, so compute it once and re-threshold.
+            dv, _ = cKDTree(aligned).query(target.vertices)
+
+            for factor in (1.0, 1.5, 2.0):
+                margin = base * factor
+                keep_v = dv < margin
+                keep_f = keep_v[target.faces].all(axis=1)
+                if not keep_f.any():
+                    continue
+                kept_pts = target.vertices[keep_v]
+                # Every template vertex should still find target surface within
+                # the margin. Allow a small shortfall for genuine holes in the
+                # scan rather than demanding a perfect covering.
+                covered = (cKDTree(kept_pts).query(aligned)[0] < margin).mean()
+                if covered >= 0.98:
+                    sub = target.submesh([np.where(keep_f)[0]], append=True)
+                    tgt_v, tgt_f, tgt_n = sub.vertices, sub.faces, sub.vertex_normals
+                    print(
+                        f"Cropped target to {len(tgt_v)} verts / {len(tgt_f)} faces "
+                        f"within {margin:.1f}mm of mask (coverage {covered:.1%})"
+                    )
+                    break
+            else:
+                print(
+                    "WARNING: no crop margin covered the template "
+                    f"(tried {base:.1f}-{base * 2.0:.1f}mm); registering against "
+                    f"the FULL target ({len(tgt_v)} verts). Measurements from this "
+                    "scan are unreliable -- the template will be pulled toward "
+                    "neck/ears/hair."
+                )
 
         tgt_features = np.column_stack([tgt_v, tgt_n])
 
