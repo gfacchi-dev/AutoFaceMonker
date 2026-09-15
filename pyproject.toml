@@ -13,7 +13,8 @@ classifiers = [
 ]
 dependencies = [
     "embreex>=4.4.0",
-    "meshmonk[io]>=0.3.0",
+    # The gfacchi-dev fork adds point-to-surface correspondences; PyPI's meshmonk lacks them.
+    "meshmonk[io] @ git+https://github.com/gfacchi-dev/meshmonk.git@v0.4.0",
     "mvmp>=1.4.2",
     "numpy>=1.26.0,<3.0",
     "scipy>=1.10",

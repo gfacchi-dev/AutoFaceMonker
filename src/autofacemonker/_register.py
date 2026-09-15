@@ -47,6 +47,23 @@ def _default_template():
     return str(files("autofacemonker.data").joinpath("template.ply"))
 
 
+def meshmonk_supports_point_to_surface() -> bool:
+    """True when the loaded meshmonk core implements point-to-surface correspondences.
+
+    Only the gfacchi-dev/meshmonk fork (>= 0.4.0) has them. On a stock build,
+    ``correspondences_symmetric=False`` silently keeps the blended-vertex rule,
+    so anything that asks for point-to-surface has to check first.
+    """
+    from pathlib import Path
+
+    core_dir = Path(meshmonk.__file__).parent
+    return any(
+        b"point_to_surface" in so.read_bytes()
+        for so in core_dir.glob("_meshmonk_core*")
+        if so.suffix in (".so", ".pyd")
+    )
+
+
 class AutoFaceMonker:
     """Register a facial template onto target meshes using MVMP + MeshMonk.
 
@@ -55,7 +72,8 @@ class AutoFaceMonker:
     template : str, pathlib.Path, trimesh.Trimesh, or None
         Template mesh. None (default) uses the bundled template.ply.
     correspondences : list of (lmk_idx, tpl_vert_id) or None
-        Manual correspondences. None (default) uses built-in 7-keypoint set.
+        Manual correspondences. None (default) uses the built-in 5-point
+        anatomical set (``DEFAULT_CORRESPONDENCES``).
     num_iterations : int
         MeshMonk nonrigid update iterations (default 80, matching Cliniface).
     nonrigid_params : dict or None
@@ -67,10 +85,21 @@ class AutoFaceMonker:
         Before the nonrigid step, crop the target to faces within this many mm
         of the rigidly-aligned template (as Cliniface does) so the morph isn't
         pulled toward neck/ears/hair. None disables cropping. Default 12.0.
+    point_to_surface : bool
+        Match each template vertex to the closest point on the target surface
+        instead of a blend of nearby target vertices (requires the
+        gfacchi-dev/meshmonk fork >= 0.4.0). This makes the fit independent of
+        how the target is tessellated: on the AppValidation study, re-meshing
+        targets moved the template by 0.63 mm under the blended rule (1.04 mm on
+        smartphone photogrammetry) and by 0.15 mm with point-to-surface. The
+        push-only rule can let the template slide off thin structures — four ear
+        landmarks moved 3.5–9.9 mm on LAFAS — so it is off by default; turn it on
+        for face-region analyses. Raises RuntimeError on a meshmonk build that
+        lacks it rather than silently registering with the blended rule.
     """
 
     def __init__(self, template=None, correspondences=None, num_iterations=80,
-                 nonrigid_params=None, crop_margin=12.0):
+                 nonrigid_params=None, crop_margin=12.0, point_to_surface=False):
         tpl_path = template if isinstance(template, (str, type(None))) else None
         if tpl_path is None:
             tpl_path = _default_template()
@@ -81,6 +110,16 @@ class AutoFaceMonker:
         self.nonrigid_params = (
             dict(CLINIFACE_NONRIGID) if nonrigid_params is None else dict(nonrigid_params)
         )
+        self.point_to_surface = point_to_surface
+        if point_to_surface:
+            if not meshmonk_supports_point_to_surface():
+                raise RuntimeError(
+                    "point_to_surface=True needs a meshmonk build with point-to-surface "
+                    f"correspondences (gfacchi-dev/meshmonk >= 0.4.0); the loaded build "
+                    f"at {getattr(meshmonk, '__file__', '?')} lacks them."
+                )
+            # Point-to-surface is only implemented on the non-symmetric path.
+            self.nonrigid_params["correspondences_symmetric"] = False
         self.crop_margin = crop_margin
         self._marker = Facemarker()
 

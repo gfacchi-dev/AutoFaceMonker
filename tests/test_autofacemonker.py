@@ -256,3 +256,45 @@ def test_crop_disabled_passes_full_target(mock_meshmonk, mock_facemarker_cls, tm
 
     kwargs = mock_meshmonk.nonrigid_register.call_args.kwargs
     assert len(kwargs["target_faces"]) == total_faces
+
+
+# ---------------------------------------------------------------------------
+# point-to-surface correspondences
+# ---------------------------------------------------------------------------
+
+@patch("autofacemonker._register.Facemarker")
+def test_point_to_surface_off_by_default(_mock_facemarker):
+    monker = AutoFaceMonker()
+    assert monker.point_to_surface is False
+    assert "correspondences_symmetric" not in monker.nonrigid_params
+
+
+@patch("autofacemonker._register.meshmonk_supports_point_to_surface", return_value=False)
+@patch("autofacemonker._register.Facemarker")
+def test_point_to_surface_refuses_stock_meshmonk(_mock_facemarker, _mock_supported):
+    """A stock build would silently keep the blended-vertex rule; fail loudly instead."""
+    with pytest.raises(RuntimeError, match="point-to-surface"):
+        AutoFaceMonker(point_to_surface=True)
+
+
+@patch("autofacemonker._register.meshmonk_supports_point_to_surface", return_value=True)
+@patch("autofacemonker._register.Facemarker")
+@patch("autofacemonker._register.meshmonk")
+def test_point_to_surface_reaches_meshmonk(mock_meshmonk, mock_facemarker_cls, _mock_supported,
+                                           target_mesh):
+    mock_marker = MagicMock()
+    mock_facemarker_cls.return_value = mock_marker
+    monker = AutoFaceMonker(point_to_surface=True)
+    n_tpl = len(monker.template.vertices)
+
+    mock_marker.predict.return_value = _make_landmark_mock(monker)
+    mock_nr = MagicMock()
+    mock_nr.aligned_vertices = np.zeros((n_tpl, 3))
+    mock_meshmonk.nonrigid_register.return_value = mock_nr
+
+    monker.register(target_mesh)
+
+    kwargs = mock_meshmonk.nonrigid_register.call_args.kwargs
+    assert kwargs["correspondences_symmetric"] is False
+    # The Cliniface configuration is kept alongside it.
+    assert kwargs["transform_sigma"] == 1.6

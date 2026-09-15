@@ -30,7 +30,7 @@ wheels = [
 
 [[package]]
 name = "autofacemonker"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "embreex" },
@@ -54,7 +54,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "embreex", specifier = ">=4.4.0" },
-    { name = "meshmonk", extras = ["io"], specifier = ">=0.3.0" },
+    { name = "meshmonk", extras = ["io"], git = "https://github.com/gfacchi-dev/meshmonk.git?rev=v0.4.0" },
     { name = "mvmp", specifier = ">=1.4.2" },
     { name = "numpy", specifier = ">=1.26.0,<3.0" },
     { name = "pyopengl-accelerate", marker = "extra == 'fast'" },
@@ -486,27 +486,12 @@ wheels = [
 
 [[package]]
 name = "meshmonk"
-version = "0.3.0"
-source = { registry = "https://pypi.org/simple" }
+version = "0.4.0"
+source = { git = "https://github.com/gfacchi-dev/meshmonk.git?rev=v0.4.0#6ec56ac5c0354ae54fe546f09ee8c30e36ea1129" }
 dependencies = [
     { name = "numpy" },
     { name = "typer" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/99/5739edf09be0f2cc8d176edafada44fb352bd03ea68f7e5d6c45b768931a/meshmonk-0.3.0.tar.gz", hash = "sha256:33f108c6876a305cf66a05bd42f80bfefb4aa3cbe7feb5931055be2b0b4d17d6", size = 59970892, upload-time = "2026-05-07T13:29:02.818Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/36/23d55ddda7cacee23bb9d8403ba54eaaaa722ff9464e98cf04c6daa6e4c7/meshmonk-0.3.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:7ab2e6f4b2d28ebdf79d8badc0f704794b2d875ad57266bbb5840e3557e47a74", size = 260622, upload-time = "2026-05-07T13:28:42.726Z" },
-    { url = "https://files.pythonhosted.org/packages/7c/dd/7b2e14dd237491083e26ca15435f7488879352c41baafda13766236065a9/meshmonk-0.3.0-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:295598d94365d97c5485aef608f26154e06f0434179361d5f0658e7b48e2977a", size = 315038, upload-time = "2026-05-07T13:28:44.108Z" },
-    { url = "https://files.pythonhosted.org/packages/a1/26/0d52d42b248102ff9fd98e435d518a9061be959186c806ff21073e6d974d/meshmonk-0.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:cee9654fbb599287bb90b85dfa575d1dba97cc5e5927bfa4582122acea92e908", size = 348189, upload-time = "2026-05-07T13:28:45.591Z" },
-    { url = "https://files.pythonhosted.org/packages/c2/ef/04c223ce2ef9ba92a50f353a1a207ba91ad00b4712a28190df2c3afdc587/meshmonk-0.3.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:c8227ee3bee9c0760121f16a5bd246da98707c846c764b1f515c47faf7dd194e", size = 779485, upload-time = "2026-05-07T13:28:46.987Z" },
-    { url = "https://files.pythonhosted.org/packages/ca/dd/c5dbf7ef9f3427616d0edd7d0e51b6be78e155bd126ff1249451db572da4/meshmonk-0.3.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:68e00909217ce1efc310b6580b71b348ec6f120fe70312951505fac8f0d14053", size = 822560, upload-time = "2026-05-07T13:28:48.787Z" },
-    { url = "https://files.pythonhosted.org/packages/ad/a1/d126553b2ea42bb5cb636e3561b6dcc206bc5422071329da74a1e4c1f410/meshmonk-0.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:0c25e192e77bbdf74dc410650415330578ac3b7b30e3f4a6553055c4e0e890e6", size = 422915, upload-time = "2026-05-07T13:28:50.182Z" },
-    { url = "https://files.pythonhosted.org/packages/09/51/003b9aeb0afe3850ac081186348756118665af740c2232a5e8b656eb367f/meshmonk-0.3.0-cp312-abi3-macosx_11_0_arm64.whl", hash = "sha256:f62344ce0e4706110cb42bf54e5666f491bef9a3b9c4a980d86224da76cfdd9b", size = 259754, upload-time = "2026-05-07T13:28:51.631Z" },
-    { url = "https://files.pythonhosted.org/packages/84/f8/12a8b55e76d9c09587e217628914fcf5669c749012cdbc243390351359f9/meshmonk-0.3.0-cp312-abi3-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:2efd91c64b6513e19246fb1a30bd9b0b72a1f0fe2dbf8ed2c1d3eae67b983406", size = 314276, upload-time = "2026-05-07T13:28:53.255Z" },
-    { url = "https://files.pythonhosted.org/packages/fc/10/bc6b50c26f9c5dde10f06b861a4d02e449e166b21417dd8a7a4b863a786b/meshmonk-0.3.0-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:59b8e73167a0e5877dd6f178aeb50ce595d12d48c0863292c9acb34cd59ce01d", size = 347466, upload-time = "2026-05-07T13:28:54.745Z" },
-    { url = "https://files.pythonhosted.org/packages/6b/3f/08ec08250851502cb3663259cb2973df7ca0d78357b7974508416d9b11a6/meshmonk-0.3.0-cp312-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:df65312a81f628d35d2be2522c5632766451dc6057655050e093459e926ea55f", size = 778771, upload-time = "2026-05-07T13:28:56.458Z" },
-    { url = "https://files.pythonhosted.org/packages/68/08/50ed7993ce0f9f916fa1470ae0feca7b0bec2b88f85f8dbcb448f5e7932d/meshmonk-0.3.0-cp312-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:1b503667107babe767b4714057396363deffba21b7761c0249b8335ba713c667", size = 821574, upload-time = "2026-05-07T13:28:58.28Z" },
-    { url = "https://files.pythonhosted.org/packages/9e/37/5466a1dd89ead8d51aea5779c9ef71021505d3353144db70de481ec0eace/meshmonk-0.3.0-cp312-abi3-win_amd64.whl", hash = "sha256:8268dd853a7de9f60c32795a44dd996362a23298c2ca1599021328f61ebdd2ce", size = 422361, upload-time = "2026-05-07T13:29:00.196Z" },
 ]
 
 [package.optional-dependencies]

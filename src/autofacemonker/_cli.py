@@ -17,8 +17,11 @@ def main():
                         help="JSON file with landmark->vertex mapping, e.g. {\"0\": 3572, ...}")
     parser.add_argument("-o", "--out", default=None,
                         help="Output PLY path (default: <target>_warped.ply)")
-    parser.add_argument("-n", "--iterations", type=int, default=120,
-                        help="MeshMonk nonrigid iterations (default: 120)")
+    parser.add_argument("-n", "--iterations", type=int, default=80,
+                        help="MeshMonk nonrigid iterations (default: 80, matching Cliniface)")
+    parser.add_argument("--point-to-surface", action="store_true",
+                        help="Point-to-surface correspondences (needs the gfacchi-dev/meshmonk fork); "
+                             "sampling-invariant, but can slide off thin structures such as ears")
     args = parser.parse_args()
 
     from ._register import AutoFaceMonker
@@ -37,6 +40,7 @@ def main():
         template=args.template,
         correspondences=corr,
         num_iterations=args.iterations,
+        point_to_surface=args.point_to_surface,
     )
     monker.register(args.target, save_path=out)
 
