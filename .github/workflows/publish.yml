@@ -1,9 +1,12 @@
 name: Publish to PyPI
 
+# Manual only. From 0.3.0 AutoFaceMonker depends on the gfacchi-dev/meshmonk
+# fork through a git URL, and PyPI rejects packages with direct-reference
+# dependencies, so tagging a release must not attempt an upload. Releases are
+# published as GitHub tags/Releases; run this by hand only once meshmonk is
+# resolvable from an index.
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch: {}
 
 jobs:
   pypi-publish:
